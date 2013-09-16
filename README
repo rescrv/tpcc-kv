@@ -1,0 +1,50 @@
+TPC-C for Key Value APIs
+========================
+
+This code comes from a `git rebase -i --root` of a private repo during my
+thesis work.  It is unsupported at the moment.
+
+Example:
+
+``` #!/bin/zsh
+
+set -e
+
+WAREHOUSES=10
+DISTRICTS=10
+CLIENTS=100
+
+./tpcc-kv setup consus
+./tpcc-kv load-items consus &
+for W in `seq $WAREHOUSES`
+do
+    ./tpcc-kv load-warehouse consus --warehouses $WAREHOUSES --warehouse $W &
+done
+wait
+for W in `seq $WAREHOUSES`
+do
+    wait
+done
+for W in `seq $WAREHOUSES`
+do
+    for D in `seq $DISTRICTS`
+    do
+        ./tpcc-kv load-district consus --warehouses $WAREHOUSES --warehouse $W --districts $DISTRICTS --district $D &
+    done
+done
+for W in `seq $WAREHOUSES`
+do
+    for D in `seq $DISTRICTS`
+    do
+        wait
+    done
+done
+for c in `seq $CLIENTS`
+do
+    ./tpcc-kv run consus --output bench-${c}.dat --operations 1000 --warehouses $WAREHOUSES --districts $DISTRICTS &
+done
+for c in `seq $CLIENTS`
+do
+    wait
+done
+```

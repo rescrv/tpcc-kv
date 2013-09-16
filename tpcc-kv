@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+
+# Copyright (c) 2013-2016
+# All rights reserved.
+
+import os
+import sys
+
+sys.path.append(os.path.dirname(__file__))
+
+import tpcc_kv
+sys.exit(tpcc_kv.main(sys.argv[1:]))
